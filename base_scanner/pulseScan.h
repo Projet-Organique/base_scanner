@@ -19,11 +19,19 @@ float beatsPerMinute;
 int beatAvg;
 
 int user_bpm;
-
+unsigned long check = millis();
+unsigned long timer = 30000;
+bool runTimer = false;
 void getScan()
 {
 
   long irValue = particleSensor.getIR();
+
+  if (irValue < 50000) {
+    Serial.print(" No finger?");
+    check = millis();
+    return;
+  }
 
   if (checkForBeat(irValue) == true)
   {
@@ -32,9 +40,12 @@ void getScan()
     lastBeat = millis();
 
     beatsPerMinute = 60 / (delta / 1000.0);
+    /*if (beatsPerMinute <= 50 || beatsPerMinute >= 140) {
 
+      }*/
     if (beatsPerMinute < 255 && beatsPerMinute > 20)
     {
+
       rates[rateSpot++] = (byte)beatsPerMinute; //Store this reading in the array
       rateSpot %= RATE_SIZE; //Wrap variable
 
@@ -43,38 +54,52 @@ void getScan()
       for (byte x = 0 ; x < RATE_SIZE ; x++)
         beatAvg += rates[x];
       beatAvg /= RATE_SIZE;
+
+      if (beatAvg > 50 && beatAvg < 140) {
+        runTimer = true;
+      }
     }
+  delay(500);
   }
 
-  Serial.print("IR=");
-  Serial.print(irValue);
+  Serial.println();
   Serial.print(", BPM=");
   Serial.print(beatsPerMinute);
   Serial.print(", Avg BPM=");
   Serial.print(beatAvg);
-
-  if (irValue < 50000) {
-    //Serial.print(" No finger?");
-  }
+  Serial.println();
 
 }
 void pulseScan() { // the led task
-  // check if delay has timed out after 10sec == 10000mS
-  if (delayRunning && ((millis() - delayStart) >= 10000)) {
-    delayRunning = false; // // prevent this code being run more then once
-    user_bpm = beatAvg;
-    Serial.println(user_bpm);
-    Serial.println("Turned LED Off");
-  } else {
-    getScan();
+  //unsigned long check = millis();
+  if (runTimer) {
+    if (millis() - check > timer) {
+      //runTimer = false;
+      Serial.println(user_bpm);
+      delay(1000);
+      return;
+    } else {
+
+    }
   }
+  getScan();
+  user_bpm = beatAvg;
+  // check if delay has timed out after 10sec == 10000mS
+  /* if (delayRunning && ((millis() - delayStart) >= 10000)) {
+     delayRunning = false; // // prevent this code being run more then once
+     user_bpm = beatAvg;
+     Serial.println(user_bpm);
+     Serial.println("Turned LED Off");
+    } else {*/
+
+  /* }*/
 }
 
 void pulseInit()
 {
 
   Serial.println("Initializing...");
-
+  getRandomUser();
   // Initialize sensor
   if (!particleSensor.begin(Wire, I2C_SPEED_FAST)) //Use default I2C port, 400kHz speed
   {

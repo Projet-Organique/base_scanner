@@ -2,7 +2,6 @@
 
 #include <WiFi.h>
 #include "wifi.h"
-#include "users.h"
 #include "pulseScan.h"
 #include <Arduino_JSON.h>
 
@@ -64,7 +63,7 @@ void loop() {
   
   if ((WiFi.status() == WL_CONNECTED)) { //Check the current connection status
     // Serial.println("data received" + users); 
-    pulseScan();
+    //pulseScan();
     //delay(10000);
   }
   // Serial.println(value);

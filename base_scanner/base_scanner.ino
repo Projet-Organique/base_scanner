@@ -4,7 +4,7 @@
 #include "wifi.h"
 //#include "user.h"
 #include "pulseScan.h"
-#include <Arduino_JSON.h>
+//#include <Arduino_JSON.h>
 
 //create a wifi.h for connection with template
 /*
@@ -65,7 +65,7 @@ void loop() {
   
   if ((WiFi.status() == WL_CONNECTED)) { //Check the current connection status
     // Serial.println("data received" + users); 
-    //pulseScan();
+    pulseScan();
     //delay(10000);
   }
   // Serial.println(value);

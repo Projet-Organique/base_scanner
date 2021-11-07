@@ -30,7 +30,7 @@ void getScan()
   long irValue = particleSensor.getIR();
 
   if (irValue < 50000) {
-    Serial.print(" No finger?");
+    //Serial.print(" No finger?");
     check = millis();
     return;
   }
@@ -61,7 +61,7 @@ void getScan()
         runTimer = true;
       }
     }
-  delay(500);
+  //delay(500);
   }
 
   Serial.println();
@@ -101,6 +101,9 @@ void pulseScan() { // the led task
 
 void pulseInit()
 {
+
+  /// make sure that if no lantern available dont run bpm
+  ///maybe make a osc call to indicate that nothing is available and do a led anime
   user = getRandomUser();
   Serial.println(user);
   Serial.println("Initializing...");

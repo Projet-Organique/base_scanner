@@ -1,8 +1,11 @@
 #include <HTTPClient.h>
-#include <Arduino_JSON.h>
+//#include <Arduino_JSON.h>
 #include <ArduinoJson.h>
 
 String resquest(String endpoint, int request, String query) {
+  Serial.println(endpoint);
+  Serial.println(request);
+  Serial.println(query);
   HTTPClient http;
   int httpResponseCode;
 
@@ -31,7 +34,7 @@ String resquest(String endpoint, int request, String query) {
     Serial.println(httpResponseCode);
     payload = http.getString();
 
-    Serial.println(payload);
+    Serial.println("payload: " + payload);
   }
   else {
     Serial.print("Error code: ");
@@ -49,14 +52,23 @@ String getRandomUser() {
 }
 
 String updateUser(String content, String pulseValue) {
- /* StaticJsonDocument<200> doc;
-  char Buf[150];
-  content.toCharArray(Buf, 150);
-  char json[] = "{\"sensor\":\"gps\",\"time\":1351824120,\"data\":[48.756080,2.302038]}";
-  DeserializationError error = deserializeJson(doc, json);
-  //JsonObject& root = jsonBuffer.parseObject(json);
+  Serial.println(content);
+  //JsonArray& root = jsonBuffer.parseArray(content);
+  //const char* world = root["_id"][0];
+  // Serial.println(world);
+  StaticJsonDocument<256> doc;
+  //DynamicJsonDocument doc(1024);
+  deserializeJson(doc, content);
+  // Serial.println("doc: " + doc);
+  String value = doc["_id"];
 
- String id = doc["sensor"]; */
-  String updateUserEndpoint = "http://" + local_pc_ip + ":" + local_pc_port + "/api/users/";// + id;
+  String updateUserEndpoint = "http://" + local_pc_ip + ":" + local_pc_port + "/api/users/" + value;
   return resquest(updateUserEndpoint, 2,  "{\"pulse\":\"" + String(pulseValue) + "\"}");
+
+
+void(* resetFunc) (void) = 0;  // declare reset fuction at address 0
+
+  resetFunc(); //call reset
+
+  //NOW FIND A WAY TO STOP THE CALL OR RESET
 }

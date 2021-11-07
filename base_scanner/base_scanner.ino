@@ -2,6 +2,7 @@
 
 #include <WiFi.h>
 #include "wifi.h"
+//#include "user.h"
 #include "pulseScan.h"
 #include <Arduino_JSON.h>
 
@@ -55,6 +56,7 @@ bool ConnectWifi(void)
 void setup() {
   Serial.begin(115200);
   ConnectWifi();
+
   pulseInit();
   //getUsers(200);
 }

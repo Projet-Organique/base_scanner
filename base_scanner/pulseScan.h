@@ -2,9 +2,8 @@
 
 #include <Wire.h>
 #include "MAX30105.h"
-#include "users.h"
 #include "heartRate.h"
-
+#include "user.h"
 MAX30105 particleSensor;
 
 unsigned long delayStart = 0; // the time the delay started
@@ -22,6 +21,9 @@ int user_bpm;
 unsigned long check = millis();
 unsigned long timer = 30000;
 bool runTimer = false;
+
+String user;
+
 void getScan()
 {
 
@@ -75,11 +77,13 @@ void pulseScan() { // the led task
   if (runTimer) {
     if (millis() - check > timer) {
       //runTimer = false;
+      updateUser(user, String(user_bpm));
       Serial.println(user_bpm);
+      //updateUser(
       delay(1000);
       return;
     } else {
-
+      
     }
   }
   getScan();
@@ -97,9 +101,10 @@ void pulseScan() { // the led task
 
 void pulseInit()
 {
-
+  user = getRandomUser();
+  Serial.println(user);
   Serial.println("Initializing...");
-  getRandomUser();
+  
   // Initialize sensor
   if (!particleSensor.begin(Wire, I2C_SPEED_FAST)) //Use default I2C port, 400kHz speed
   {

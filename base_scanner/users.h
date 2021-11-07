@@ -5,14 +5,14 @@ String updateUserEndpoint = "http://" + local_pc_ip + ":" + local_pc_port + "/ap
 
 int userId;
 
-String getRandomUser(int pulse) {
+String getRandomUser() {
   HTTPClient http;
 
   // Your IP address with path or Domain name with URL path
   http.begin(randomUserEndpoint);
   http.addHeader("Content-Type", "application/json");
   // Send HTTP POST request
-  String json = "{\"pulse\":\"" + String(pulseValue) + "\"}";
+  String json = "{\"pulse\":\"" + String(pulse) + "\"}";
   int httpResponseCode = http.POST();
 
   String payload = "{}";

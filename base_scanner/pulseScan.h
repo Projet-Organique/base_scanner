@@ -6,6 +6,8 @@
 #include "user.h"
 MAX30105 particleSensor;
 
+#define LED 19
+
 unsigned long delayStart = 0; // the time the delay started
 bool delayRunning = false; // true if still waiting for delay to finish
 
@@ -19,7 +21,7 @@ int beatAvg;
 
 int user_bpm;
 unsigned long check = millis();
-unsigned long timer = 30000;
+unsigned long timer = 10000;
 bool runTimer = false;
 
 String user;
@@ -61,7 +63,7 @@ void getScan()
         runTimer = true;
       }
     }
-  //delay(500);
+    //delay(500);
   }
 
   Serial.println();
@@ -72,6 +74,9 @@ void getScan()
   Serial.println();
 
 }
+
+void(* resetFunc) (void) = 0; //declare reset function @ address 0
+
 void pulseScan() { // the led task
   //unsigned long check = millis();
   if (runTimer) {
@@ -79,15 +84,26 @@ void pulseScan() { // the led task
       //runTimer = false;
       updateUser(user, String(user_bpm));
       Serial.println(user_bpm);
+      digitalWrite(LED, LOW);
+      beatAvg = 0;
+      runTimer = false;
+      user_bpm = 0;
+      Serial.println(user.length());
+      user = "";
       //updateUser(
-      delay(1000);
+      delay(3000);
+     // user = getRandomUser();
+     // Serial.println("NEW USER" + user);
       return;
     } else {
-      
+
     }
   }
-  getScan();
-  user_bpm = beatAvg;
+  if(user.length() != 0){
+      getScan();
+  user_bpm = beatAvg;  
+    }
+
   // check if delay has timed out after 10sec == 10000mS
   /* if (delayRunning && ((millis() - delayStart) >= 10000)) {
      delayRunning = false; // // prevent this code being run more then once
@@ -104,10 +120,12 @@ void pulseInit()
 
   /// make sure that if no lantern available dont run bpm
   ///maybe make a osc call to indicate that nothing is available and do a led anime
+  pinMode(LED, OUTPUT);
+
   user = getRandomUser();
   Serial.println(user);
   Serial.println("Initializing...");
-  
+
   // Initialize sensor
   if (!particleSensor.begin(Wire, I2C_SPEED_FAST)) //Use default I2C port, 400kHz speed
   {
@@ -119,7 +137,7 @@ void pulseInit()
   particleSensor.setup(); //Configure sensor with default settings
   particleSensor.setPulseAmplitudeRed(0x0A); //Turn Red LED to low to indicate sensor is running
   particleSensor.setPulseAmplitudeGreen(0); //Turn off Green LED
-
+  digitalWrite(LED, HIGH);
   delayStart = millis();   // start delay
   delayRunning = true; // not finished yet
 }

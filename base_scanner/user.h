@@ -62,13 +62,11 @@ String updateUser(String content, String pulseValue) {
   // Serial.println("doc: " + doc);
   String value = doc["_id"];
 
-  String updateUserEndpoint = "http://" + local_pc_ip + ":" + local_pc_port + "/api/users/" + value;
+  String updateUserEndpoint = "http://" + local_pc_ip + ":" + local_pc_port + "/api/users/" + value + "/scan_data/8081";
   return resquest(updateUserEndpoint, 2,  "{\"pulse\":\"" + String(pulseValue) + "\"}");
 
 
-void(* resetFunc) (void) = 0;  // declare reset fuction at address 0
 
-  resetFunc(); //call reset
 
   //NOW FIND A WAY TO STOP THE CALL OR RESET
 }
